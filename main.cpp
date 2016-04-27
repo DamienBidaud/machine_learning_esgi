@@ -22,11 +22,13 @@ extern "C"{
         return model;
     }
 
-    int perceptron(int value, double  model){
-        int sum = 0;
-        sum+= value*model;
+    double perceptron(double* value, double*  model, int size){
+        double sum = 0;
+        for(int i = 0; i < size; i++){
+            sum+= value[i]*model[i];
+        }
 
-        return sum;
+        return (sum<0)?-1:1;
     }
 
     double* initW(int size){
@@ -38,17 +40,26 @@ extern "C"{
         return W;
     }
 
-    double* pal(int* exemplValue, int size, double* model, int* waitValue, double coef){
-        double* W = initW(size);
-        for(int i = 0; i < size; i++){
 
-            if(waitValue[i] != perceptron(exemplValue[i], model[i])){
-                W[i] = W[i]+(coef*exemplValue[i]*model[i]);
-            }
-
+    double** cleanArray(double* value, int size, int sizeElement){
+        double** array = new double*[size/sizeElement];
+        for(int i = 0; i < size/sizeElement; i++){
+            array[i] = new double[sizeElement];
         }
+        return array;
+    }
 
-        return W;
+    void pal(double* exemplValue, int size,int inputSize, double* model, double* waitValue, double coef, int maxIter){
+        int iter = 0;
+        double** value = cleanArray(exemplValue, size, inputSize);
+        while(iter < maxIter) {
+            for (int i = 0; i < size/inputSize; i++) {
+                if (waitValue[i] != perceptron(value[i], model, inputSize)) {
+                    model[i] = model[i] + (coef * exemplValue[i] * waitValue[i]);
+                }
+            }
+            iter++;
+        }
     }
 
     double lineaire(int w[], int x[], int sumLength){
@@ -60,9 +71,16 @@ extern "C"{
     }
 
     int main(void){
-        double* model = createModel(6);
+        double* model = createModel(2);
+        double* wait = new double[6];
+        wait[0]= 1;
+        wait[1]= -1;
+        wait[2]= 1;
+        wait[3]= 1;
+        wait[4]= -1;
+        wait[5]= 1;
         cout << "model" << endl;
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < 2; i++){
 
             cout << model[i] << endl;
         }
