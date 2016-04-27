@@ -31,20 +31,19 @@ extern "C"{
         return (sum<0)?-1:1;
     }
 
-    double* initW(int size){
-        double* W = new double[size];
-        for(int i = 0; i < size; i++){
-            W[i] = randome(-1, 1);
-        }
-
-        return W;
-    }
-
-
     double** cleanArray(double* value, int size, int sizeElement){
         double** array = new double*[size/sizeElement];
         for(int i = 0; i < size/sizeElement; i++){
             array[i] = new double[sizeElement];
+        }
+        int pos = 0;
+        int i = 0;
+        while(i < size){
+            for(int j = 0; j < sizeElement; j++){
+                array[pos][j] = value[i+j];
+            }
+            i = i + sizeElement;
+            pos++;
         }
         return array;
     }
@@ -55,7 +54,11 @@ extern "C"{
         while(iter < maxIter) {
             for (int i = 0; i < size/inputSize; i++) {
                 if (waitValue[i] != perceptron(value[i], model, inputSize)) {
-                    model[i] = model[i] + (coef * exemplValue[i] * waitValue[i]);
+                    double xk = 1;
+                    for(int j = 0; j < inputSize; j++){
+                        xk = xk * value[i][j];
+                    }
+                    model[i] = model[i] + (coef * xk * waitValue[i]);
                 }
             }
             iter++;
@@ -74,12 +77,6 @@ extern "C"{
         double* model = createModel(2);
 
 
-        cout << "model" << endl;
-        for(int i = 0; i < 2; i++){
-
-            cout << model[i] << endl;
-        }
-
         double* wait = new double[3];
         wait[0]= 1;
         wait[1]= -1;
@@ -87,12 +84,12 @@ extern "C"{
 
 
         double* pDouble = new double[6];
-        pDouble[0]=6,65;
-        pDouble[1]=1,49;
-        pDouble[2]=1,92;
-        pDouble[3]=-1,86;
-        pDouble[4]=-1,92;
-        pDouble[5]=0,9;
+        pDouble[0]=6.65;
+        pDouble[1]=1.49;
+        pDouble[2]=1.92;
+        pDouble[3]=-1.86;
+        pDouble[4]=-1.92;
+        pDouble[5]=0.9;
 
         pal(pDouble,6,2, model, wait, 0.1,25);
 
