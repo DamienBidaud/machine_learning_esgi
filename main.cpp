@@ -9,12 +9,7 @@ using namespace std;
 
 extern "C"{
 
-    double randome(int min, int max){
-        return rand() % (max - min + 1) + min;
-    }
-
-
-    double* createModel(int nbInput){
+    __declspec(dllexport) double* createModel(int nbInput){
         double * model = new double[nbInput];
         for(int i = 0; i < nbInput; i++){
             model[i] = 0;
@@ -22,7 +17,7 @@ extern "C"{
         return model;
     }
 
-    double perceptron(double* value, double*  model, int size){
+    __declspec(dllexport) double perceptron(double* value, double*  model, int size){
         double sum = 0;
         for(int i = 0; i < size; i++){
             sum+= value[i]*model[i];
@@ -48,7 +43,7 @@ extern "C"{
         return array;
     }
 
-    void pal(double* exemplValue, int size,int inputSize, double* model, double* waitValue, double coef, int maxIter){
+    __declspec(dllexport) void pal(double* exemplValue, int size,int inputSize, double* model, double* waitValue, double coef, int maxIter){
         int iter = 0;
         double** value = cleanArray(exemplValue, size, inputSize);
         while(iter < maxIter) {
@@ -65,7 +60,7 @@ extern "C"{
         }
     }
 
-    double lineaire(int w[], int x[], int sumLength){
+    __declspec(dllexport) double lineaire(int w[], int x[], int sumLength){
         int sum = 0;
         for(int i = 0; i < sumLength; i++){
             sum+= w[i] * x[i];
@@ -76,12 +71,10 @@ extern "C"{
     int main(void){
         double* model = createModel(2);
 
-
         double* wait = new double[3];
         wait[0]= 1;
         wait[1]= -1;
         wait[2]= 1;
-
 
         double* pDouble = new double[6];
         pDouble[0]=6.65;
