@@ -2,21 +2,23 @@
 // Created by bidau on 26/04/2016.
 //
 
-#include <cstdlib>
-#include <iostream>
-
-using namespace std;
-
 extern "C"{
 
-    __declspec(dllexport) double* createModel(int nbInput){
-        double * model = new double[nbInput];
+    /**
+     * créer le model
+     */
+    __declspec(dllexport) void createModel(int nbInput, double* model){
         for(int i = 0; i < nbInput; i++){
             model[i] = 0;
         }
-        return model;
     }
 
+    /**
+     * calcule le parceptron
+     * val = couple de coordonée sur unity
+     * model = c'est le model créer précedement
+     * size = taille de l'élément
+     */
     __declspec(dllexport) double perceptron(double* value, double*  model, int size){
         double sum = 0;
         for(int i = 0; i < size; i++){
@@ -26,7 +28,11 @@ extern "C"{
         return (sum<0)?-1:1;
     }
 
-    double** cleanArray(double* value, int size, int sizeElement){
+
+    /**
+     * prend un tableau 1 dimension et le transform en 2 dimension
+     */
+    __declspec(dllexport) double** cleanArray(double* value, int size, int sizeElement){
         double** array = new double*[size/sizeElement];
         for(int i = 0; i < size/sizeElement; i++){
             array[i] = new double[sizeElement];
@@ -43,22 +49,24 @@ extern "C"{
         return array;
     }
 
+    /**
+     * entraine le model
+     */
     __declspec(dllexport) void pal(double* exemplValue, int size,int inputSize, double* model, double* waitValue, double coef, int maxIter){
         int iter = 0;
         double** value = cleanArray(exemplValue, size, inputSize);
         while(iter < maxIter) {
             for (int i = 0; i < size/inputSize; i++) {
                 if (waitValue[i] != perceptron(value[i], model, inputSize)) {
-                    double xk = 1;
                     for(int j = 0; j < inputSize; j++){
                         model[j] = model[j] + (coef * value[i][j] * waitValue[i]);
                     }
-
                 }
             }
             iter++;
         }
     }
+
 
     __declspec(dllexport) double lineaire(int w[], int x[], int sumLength){
         int sum = 0;
@@ -69,26 +77,5 @@ extern "C"{
     }
 
     int main(void){
-        double* model = createModel(2);
-
-        double* wait = new double[3];
-        wait[0]= 1;
-        wait[1]= -1;
-        wait[2]= 1;
-
-        double* pDouble = new double[6];
-        pDouble[0]=6.65;
-        pDouble[1]=1.49;
-        pDouble[2]=1.92;
-        pDouble[3]=-1.86;
-        pDouble[4]=-1.92;
-        pDouble[5]=0.9;
-
-        pal(pDouble,6,2, model, wait, 0.1,25);
-
-        cout << "model" << endl;
-        for(int i = 0; i < 2; i++){
-            cout << model[i] << endl;
-        }
     }
 }
