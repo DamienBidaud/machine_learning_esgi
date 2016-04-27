@@ -72,13 +72,30 @@ extern "C"{
 
     int main(void){
         double* model = createModel(2);
-        double* wait = new double[6];
+
+
+        cout << "model" << endl;
+        for(int i = 0; i < 2; i++){
+
+            cout << model[i] << endl;
+        }
+
+        double* wait = new double[3];
         wait[0]= 1;
         wait[1]= -1;
         wait[2]= 1;
-        wait[3]= 1;
-        wait[4]= -1;
-        wait[5]= 1;
+
+
+        double* pDouble = new double[6];
+        pDouble[0]=6,65;
+        pDouble[1]=1,49;
+        pDouble[2]=1,92;
+        pDouble[3]=-1,86;
+        pDouble[4]=-1,92;
+        pDouble[5]=0,9;
+
+        pal(pDouble,6,2, model, wait, 0.1,25);
+
         cout << "model" << endl;
         for(int i = 0; i < 2; i++){
 
