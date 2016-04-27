@@ -51,9 +51,9 @@ extern "C"{
                 if (waitValue[i] != perceptron(value[i], model, inputSize)) {
                     double xk = 1;
                     for(int j = 0; j < inputSize; j++){
-                        xk = xk * value[i][j];
+                        model[j] = model[j] + (coef * value[i][j] * waitValue[i]);
                     }
-                    model[i] = model[i] + (coef * xk * waitValue[i]);
+
                 }
             }
             iter++;
