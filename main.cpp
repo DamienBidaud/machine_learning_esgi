@@ -32,7 +32,7 @@ extern "C"{
     /**
      * prend un tableau 1 dimension et le transform en 2 dimension
      */
-    __declspec(dllexport) double** cleanArray(double* value, int size, int sizeElement){
+     __declspec(dllexport) double** cleanArray(double* value, int size, int sizeElement){
         double** array = new double*[size/sizeElement];
         for(int i = 0; i < size/sizeElement; i++){
             array[i] = new double[sizeElement];
@@ -68,7 +68,7 @@ extern "C"{
     }
 
 
-    __declspec(dllexport) double lineaire(int w[], int x[], int sumLength){
+    __declspec(dllexport) double lineaire_model(int w[], int x[], int sumLength){
         int sum = 0;
         for(int i = 0; i < sumLength; i++){
             sum+= w[i] * x[i];
@@ -76,6 +76,4 @@ extern "C"{
         return sum;
     }
 
-    int main(void){
-    }
 }
