@@ -3,14 +3,20 @@
 //
 
 
+#include <cstdlib>
+
 extern "C"{
 
+
+    double randValue(double max, double min) {
+        return (max - min) * ((double)rand() / (double)RAND_MAX) + min;
+    }
     /**
      * créer le model
      */
     __declspec(dllexport) void createModel(int nbInput, double* model){
         for(int i = 0; i < nbInput; i++){
-            model[i] = 0;
+            model[i] = randValue(-1,1);
         }
     }
 
@@ -50,12 +56,12 @@ extern "C"{
         return array;
     }
 
-   /* __declspec(dllexport) void deleteArray(double** array, int size){
+    void deleteArray(double** array, int size){
         for(int i = 0; i < size; i++){
-            delete array[i];
+            delete[] array[i];
         }
         delete array;
-    }*/
+    }
 
     /**
      * entraine le model
@@ -67,14 +73,16 @@ extern "C"{
             for (int i = 0; i < size/inputSize; i++) {
                 if (waitValue[i] != perceptron(value[i], model, inputSize)) {
                     for(int j = 0; j < inputSize; j++){
-                        model[j] = model[j] + (coef * value[i][j] * waitValue[i]);
+                        model[j] = model[j] + (coef * (waitValue[i] *value[i][j]));
                     }
                 }
             }
             iter++;
         }
-        //deleteArray(value, size/inputSize);
+        deleteArray(value, size/inputSize);
     }
+
+
 
     __declspec(dllexport) void regresion(double* valueSend, int size, int inputSize, double* waitValue, double* model){
         double** value = cleanArray(valueSend, size, inputSize);
