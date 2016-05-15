@@ -16,6 +16,7 @@ public:
     double getSumWeight(int,int);
     void updateWeight();
     void initWeight();
+    double randValue(double, double);
 private:
     int nbLayers;
     int nbNeurons;
@@ -24,7 +25,8 @@ private:
     double* layers;
     double* expeted;
     double*** weight;
-    void initNetwork(int, int, double*);
+    void initNetwork();
+    double getSigne(int , int, int);
 
 };
 

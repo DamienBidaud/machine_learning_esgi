@@ -11,11 +11,12 @@ NeuralNetwork::NeuralNetwork(int nbLayers, int nbNeurons,int size, int inputSize
     this->nbLayers = nbLayers;
     this->nbNeurons = nbNeurons;
     this->expeted = expected;
-    initNetwork(size, inputSize, values);
+    initNetwork();
+    initWeight();
     this->layers = new double[this->nbLayers-1];
 }
 
-void NeuralNetwork::initNetwork(int size, int inputSize, double* values) {
+void NeuralNetwork::initNetwork() {
     this->network = new double*[this->nbLayers];
     for(int i = 0; i < this->nbLayers; i++){
         this->network[i] = new double[this->nbNeurons];
@@ -29,6 +30,9 @@ void NeuralNetwork::initWeight() {
         this->weight[i] = new double*[this->nbNeurons];
         for(int j = 0 ; j < this->nbNeurons; j++){
             this->weight[i][j] = new double[this->nbNeurons];
+            for(int q = 0 ; q < this->nbNeurons; q++){
+                this->weight[i][j][q] = randValue(1, -1);
+            }
         }
     }
 }
@@ -61,7 +65,7 @@ double NeuralNetwork::getOut(int layer, int neurone) {
     double weight = 0;
     for (int i = 0; i < this->nbNeurons; i++) {
         if(layer-1>=0) {
-            weight += (this->network[layer - 1][i]) *
+            weight += (this->weight[layer - 1][i][neurone]) *
                       this->getOut(layer - 1, i);
         }
     }
@@ -81,20 +85,32 @@ void NeuralNetwork::getValues() {
 double NeuralNetwork::getSumWeight(int layer, int position){
     double sum = 0;
     for(int j = 1; j < this->nbNeurons; j++){
-        sum += (this->network[layer-1][position])*this->network[layer][j];
+        sum += (this->weight[layer-1][position][j])*this->network[layer][j];
     }
     return sum;
 }
 
 void NeuralNetwork::updateWeight() {
-
+    for(int i = 0; i < this->nbLayers; i++){
+        for(int j = 0; j < this->nbNeurons; j++){
+            for(int q = 0; q < this->nbNeurons; q++){
+                this->weight[i][j][q] = this->weight[i][j][q] - this->getSigne(i, j, q);
+            }
+        }
+    }
 }
 
 
 
-double randValue(double max, double min) {
+double NeuralNetwork::randValue(double max, double min) {
     return (max - min) * ((double)rand() / (double)RAND_MAX) + min;
 }
+
+double NeuralNetwork::getSigne(int layer, int i, int j) {
+    return ((getOut(layer-1, i)*network[layer][j])>0)?1:-1;
+}
+
+
 
 
 
