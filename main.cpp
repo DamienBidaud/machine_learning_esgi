@@ -2,14 +2,19 @@
 // Created by bidau on 26/04/2016.
 //
 
-
 #include <cstdlib>
+
+
 
 extern "C"{
 
 
     double randValue(double max, double min) {
         return (max - min) * ((double)rand() / (double)RAND_MAX) + min;
+    }
+
+    int randPos(int max, int min){
+        return (max - min) * (rand() / RAND_MAX) + min;
     }
     /**
      * créer le model
@@ -69,12 +74,19 @@ extern "C"{
     __declspec(dllexport) void pal(double* exemplValue, int size,int inputSize, double* model, double* waitValue, double coef, int maxIter){
         int iter = 0;
         double** value = cleanArray(exemplValue, size, inputSize);
+        int i = 0;
         while(iter < maxIter) {
-            for (int i = 0; i < size/inputSize; i++) {
+            /*for (int i = 0; i < size/inputSize; i++) {
                 if (waitValue[i] != perceptron(value[i], model, inputSize)) {
                     for(int j = 0; j < inputSize; j++){
                         model[j] = model[j] + (coef * (waitValue[i] *value[i][j]));
                     }
+                }
+            }*/
+            i = randPos(size/inputSize, 0);
+            if (waitValue[i] != perceptron(value[i], model, inputSize)) {
+                for(int j = 0; j < inputSize; j++){
+                    model[j] = model[j] + (coef * (waitValue[i] *value[i][j]));
                 }
             }
             iter++;
@@ -87,8 +99,8 @@ extern "C"{
     __declspec(dllexport) void regresion(double* valueSend, int size, int inputSize, double* waitValue, double* model){
         double** value = cleanArray(valueSend, size, inputSize);
 
-        //Matrix3f matrix3f;
 
+        //Matrix3f matrix3f;
         //deleteArray(value, size/inputSize);
     }
 
