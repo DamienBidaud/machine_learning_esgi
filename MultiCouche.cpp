@@ -57,7 +57,7 @@ NeuralNetwork::~NeuralNetwork() {
 
 void NeuralNetwork::getLastValue() {
     for(int i = 0; i < this->nbNeurons; i++){
-        this->network[this->nbLayers][i] = (1*(this->getOut(this->nbLayers, i)*this->getOut(this->nbLayers, i)))*(this->getOut(this->nbLayers,i)-expeted[i]);
+        this->network[this->nbLayers][i] = ((this->getOut(this->nbLayers, i)*this->getOut(this->nbLayers, i)))*(this->getOut(this->nbLayers,i)-expeted[i]);
     }
 }
 
@@ -109,6 +109,14 @@ double NeuralNetwork::randValue(double max, double min) {
 double NeuralNetwork::getSigne(int layer, int i, int j) {
     return ((getOut(layer-1, i)*network[layer][j])>0)?1:-1;
 }
+
+void NeuralNetwork::getLastRegression() {
+    for(int i = 0; i < this->nbNeurons; i++){
+        this->network[this->nbLayers][i] = (getOut(this->nbLayers, i))-expeted[i];
+    }
+}
+
+
 
 
 

@@ -17,6 +17,7 @@ public:
     void updateWeight();
     void initWeight();
     double randValue(double, double);
+    void getLastRegression();
 private:
     int nbLayers;
     int nbNeurons;
