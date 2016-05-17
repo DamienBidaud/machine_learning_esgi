@@ -3,8 +3,10 @@
 //
 
 #include <cstdlib>
+#include <iostream>
+#include "multiCouche/MultiCouche.h"
 
-
+using namespace std;
 
 extern "C"{
 
@@ -102,6 +104,41 @@ extern "C"{
 
         //Matrix3f matrix3f;
         //deleteArray(value, size/inputSize);
+    }
+
+    __declspec(dllexport)double* train(double* input, int size, int nbNeurone, int training, double* expected, int inputSize ){
+        NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize);
+        int i = 0;
+        while(i < training) {
+            neuralNetwork.getLastRegression();
+            neuralNetwork.getValues();
+            neuralNetwork.updateWeight();
+            i++;
+        }
+
+
+        return neuralNetwork.getOutput();
+    }
+
+
+    int main(void){
+        double* input = new double[8];
+        input[0]= 1.139626;
+        input[1]= 4.53;
+        input[2]= 12.78;
+        input[3]= 4.57;
+        input[4]= 1.139626;
+        input[5]= 4.52;
+        input[6]= 12.31;
+        input[7]= 4.65;
+        double* expected = new double[4];
+        expected[0]=1;
+        expected[1]=-1;
+        expected[2]=-1;
+        expected[3]=1;
+        double * test = train(input, 5, 5, 200, expected, 4);
+
+        cout << "endsokd" << endl;
     }
 
 }

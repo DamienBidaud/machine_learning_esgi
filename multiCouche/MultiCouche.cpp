@@ -4,38 +4,48 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 #include "MultiCouche.h"
+
+using namespace std;
 
 NeuralNetwork::NeuralNetwork(int nbLayers, int nbNeurons, double* expected, double* input, int sizeInput) {
     this->nbLayers = nbLayers;
     this->nbNeurons = nbNeurons;
     this->expeted = expected;
     this->sizeInput = sizeInput;
+    this->input = input;
     initNetwork(input);
     initWeight();
     this->layers = new double[this->nbLayers-1];
 }
 
 void NeuralNetwork::initNetwork(double* input) {
-    this->network = new double*[this->nbLayers+1];
-    this->network[0] = input;
-    for(int i = 1; i < this->nbLayers; i++){
-        this->network[i] = new double[this->nbNeurons];
+    this->network = new double*[this->nbLayers];
+    for(int i = 0; i < this->nbLayers; i++){
 
+        this->network[i] = new double[this->nbNeurons];
+        for (int q = 0; q < this->nbNeurons; q++) {
+            this->network[i][q] = randValue(1, -1);
+        }
     }
 }
 
 void NeuralNetwork::initWeight() {
     this->weight = new double**[this->nbLayers+1];
     for(int i = 0; i < this->nbLayers+1; i++){
-        this->weight[i] = new double*[this->nbNeurons];
-        for(int j = 0 ; j < this->nbNeurons; j++){
-            this->weight[i][j] = new double[this->nbNeurons];
-            if(j==0){
-                for(int q= 0; q <this->sizeInput; i++){
+        if(i==0){
+            this->weight[i] = new double *[this->nbNeurons];
+            for (int j = 0; j < this->sizeInput; j++) {
+                this->weight[i][j] = new double[this->nbNeurons];
+                for (int q = 0; q < this->nbNeurons; q++) {
                     this->weight[i][j][q] = randValue(1, -1);
                 }
-            }else {
+            }
+        }else {
+            this->weight[i] = new double *[this->nbNeurons];
+            for (int j = 0; j < this->nbNeurons; j++) {
+                this->weight[i][j] = new double[this->nbNeurons];
                 for (int q = 0; q < this->nbNeurons; q++) {
                     this->weight[i][j][q] = randValue(1, -1);
                 }
@@ -76,16 +86,16 @@ void NeuralNetwork::getLastValue() {
 
 double NeuralNetwork::getOut(int layer, int neurone) {
     double weight = 0;
-    for (int i = 0; i < this->sizeInput; i++) {
+    /*for (int i = 0; i < this->sizeInput; i++) {
         if(layer-1>=0) {
             weight += (this->weight[layer - 1][i][neurone]) *
                       this->getOut(layer - 1, i);
+            cout << weight<< endl;
         }
-    }
+    }*/
     for (int i = 1; i < this->nbNeurons; i++) {
-        if(layer-1>=0) {
-            weight += (this->weight[layer - 1][i][neurone]) *
-                      this->getOut(layer - 1, i);
+        if(layer-1>0) {
+            weight += (this->weight[layer - 1][i][neurone] * this->network[layer - 1][i]);
         }
     }
 
@@ -93,18 +103,23 @@ double NeuralNetwork::getOut(int layer, int neurone) {
 }
 
 void NeuralNetwork::getValues() {
-    int position = this->nbLayers;
-    for(int i = this->nbLayers-1; i > 0; i--){
+    int position = this->nbLayers-1;
+    for(int i = this->nbLayers-2; i > 0; i--){
         for(int j = 0; j < this->nbNeurons; j++){
             this->network[i][j] = (1- (this->getOut(i, j)*this->getOut(i, j)))*getSumWeight(position, j);
         }
+        position--;
     }
+
 }
 
 double NeuralNetwork::getSumWeight(int layer, int position){
     double sum = 0;
-    for(int j = 1; j < this->nbNeurons; j++){
-        sum += (this->weight[layer-1][position][j])*this->network[layer][j];
+
+    if(layer >0) {
+        for (int j = 1; j < this->nbNeurons; j++) {
+            sum += (this->weight[layer - 1][position][j]) * this->network[layer][j];
+        }
     }
     return sum;
 }
@@ -116,7 +131,7 @@ void NeuralNetwork::updateWeight() {
         }
     }
 
-    for(int i = 1; i < this->nbLayers+1; i++){
+    for(int i = 1; i < this->nbLayers-1; i++){
 
         for(int j = 0; j < this->nbNeurons; j++){
             for(int q = 0; q < this->nbNeurons; q++){
@@ -138,12 +153,14 @@ double NeuralNetwork::getSigne(int layer, int i, int j) {
 
 void NeuralNetwork::getLastRegression() {
     for(int i = 0; i < this->nbNeurons; i++){
-        this->network[this->nbLayers][i] = (getOut(this->nbLayers, i))-expeted[i];
+        this->network[this->nbLayers-1][i] = (getOut(this->nbLayers-1, i))-expeted[i];
     }
 }
 
 double *NeuralNetwork::getOutput() {
-    return this->network[this->nbLayers];
+    double* out = this->network[this->nbLayers-1];
+    cout << "ok"<<endl;
+    return out;
 }
 
 

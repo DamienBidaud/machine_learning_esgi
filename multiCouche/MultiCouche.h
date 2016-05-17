@@ -23,6 +23,7 @@ private:
     int nbLayers;
     int nbNeurons;
     int sizeInput;
+    double* input;
     double** network;
     double lastLayer;
     double* layers;
