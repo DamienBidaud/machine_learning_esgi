@@ -6,8 +6,7 @@
 #include <cmath>
 #include "MultiCouche.h"
 
-NeuralNetwork::NeuralNetwork(int nbLayers, int nbNeurons,int size, int inputSize, double* expected,
-                             double* values) {
+NeuralNetwork::NeuralNetwork(int nbLayers, int nbNeurons, double* expected) {
     this->nbLayers = nbLayers;
     this->nbNeurons = nbNeurons;
     this->expeted = expected;
@@ -115,6 +114,12 @@ void NeuralNetwork::getLastRegression() {
         this->network[this->nbLayers][i] = (getOut(this->nbLayers, i))-expeted[i];
     }
 }
+
+double *NeuralNetwork::getOutput() {
+    return this->network[this->nbLayers];
+}
+
+
 
 
 
