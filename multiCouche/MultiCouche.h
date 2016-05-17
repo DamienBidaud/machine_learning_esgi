@@ -8,7 +8,7 @@
 
 class NeuralNetwork {
 public:
-    NeuralNetwork(int, int, double*);
+    NeuralNetwork(int, int, double*, double*, int);
     void getLastValue();
     void getValues();
     double getOut(int, int);
@@ -22,12 +22,13 @@ public:
 private:
     int nbLayers;
     int nbNeurons;
+    int sizeInput;
     double** network;
     double lastLayer;
     double* layers;
     double* expeted;
     double*** weight;
-    void initNetwork();
+    void initNetwork(double*);
     double getSigne(int , int, int);
 
 };
