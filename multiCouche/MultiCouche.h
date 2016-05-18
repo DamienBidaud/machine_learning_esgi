@@ -8,24 +8,21 @@
 
 class NeuralNetwork {
 public:
-    NeuralNetwork(int, int, double*, double*, int);
-    void getLastValue();
-    void getValues();
+    NeuralNetwork(int, double*, double*,  int*);
     double getOut(int, int);
     ~NeuralNetwork();
     double getSumWeight(int,int);
     void updateWeight();
     void initWeight();
     double randNN(double, double);
-    void getLastRegression();
     double *getOutput();
+    double getDelta(int, int);
+    void updateOutput();
 private:
     int nbLayers;
-    int nbNeurons;
-    int sizeInput;
     double** network;
     double*** weight;
-    double* layers;
+    int* sizeLayers;
     double* expeted;
     void initNetwork(double*);
 };

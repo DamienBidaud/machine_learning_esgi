@@ -102,65 +102,65 @@ extern "C"{
         double** value = cleanArray(valueSend, size, inputSize);
     }
 
-    __declspec(dllexport)double* train(double* input, int size, int nbNeurone, int training, double* expected, int inputSize ){
-        NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize);
+    __declspec(dllexport)double* train(double* input, int size, int training, double* expected, int* sizeLayers ){
+        NeuralNetwork neuralNetwork(size, expected, input, sizeLayers);
         int i = 0;
         while(i < training) {
-            neuralNetwork.getLastValue();
-            neuralNetwork.getValues();
+
             neuralNetwork.updateWeight();
+            neuralNetwork.updateOutput();
             i++;
         }
         double* out = neuralNetwork.getOutput();
         return out;
     }
 
-    __declspec(dllexport)double* trainRegression(double* input, int size, int nbNeurone, int training, double* expected, int inputSize ){
-        NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize);
+    __declspec(dllexport)double* trainRegression(double* input, int size, int nbNeurone, int training, double* expected, int inputSize,int* sizeLayer ){
+        //NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize, sizeLayer);
         int i = 0;
         while(i < training) {
-            neuralNetwork.getLastRegression();
-            neuralNetwork.getValues();
-            neuralNetwork.updateWeight();
+            //neuralNetwork.getLastRegression();
+        //    neuralNetwork.updateWeight();
             i++;
         }
-        double* out = neuralNetwork.getOutput();
-        return out;
+        //double* out = neuralNetwork.getOutput();
+        return 0;
     }
 
 
     int main(void){
         cout << "start" << endl;
-        double* input = new double[8];
-        input[0]= 1.139626;
-        input[1]= 4.53;
-        input[2]= 12.78;
-        input[3]= 4.57;
-        input[4]= 1.139626;
-        input[5]= 4.52;
-        input[6]= 12.31;
-        input[7]= 4.65;
+        double* input = new double[6];
+        input[0]= 0;
+        input[1]= 0;
+        input[2]= 0;
+        input[3]= 1;
+        input[4]= 1;
+        input[5]= 1;
         double* expected = new double[4];
         expected[0]=1;
-        expected[1]=-1;
+        expected[1]=1;
         expected[2]=-1;
-        expected[3]=1;
+
+        int* sizeLayer = new int[3];
+        sizeLayer[0] = 6;
+        sizeLayer[1] = 1;
+        sizeLayer[2] = 1;
         cout << "---------------------------classification------------------------" << endl;
-        double * test = train(input, 2, 8, 10, expected, 4);
-        for(int i = 0; i < 8; i++){
+        double * test = train(input, 1, 1000, expected, sizeLayer);
+        for(int i = 0; i < 1; i++){
             cout <<test[i]<<endl;
         }
 
-        cout << "---------------------------regression------------------------" << endl;
+       /* cout << "---------------------------regression------------------------" << endl;
 
 
         test = trainRegression(input, 2, 8, 10, expected, 4);
         for(int i = 0; i < 8; i++){
             cout <<test[i]<<endl;
-        }
+        }*/
 
         cout << "end" << endl;
-        getchar();
     }
 
 }
