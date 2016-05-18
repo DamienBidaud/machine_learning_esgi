@@ -111,8 +111,8 @@ extern "C"{
             neuralNetwork.updateOutput();
             i++;
         }
-        double* out = neuralNetwork.getOutput();
-        return out;
+        return neuralNetwork.getOutput();
+
     }
 
     __declspec(dllexport)double* trainRegression(double* input, int size, int nbNeurone, int training, double* expected, int inputSize,int* sizeLayer ){
@@ -147,8 +147,8 @@ extern "C"{
         sizeLayer[1] = 1;
         sizeLayer[2] = 1;
         cout << "---------------------------classification------------------------" << endl;
-        double * test = train(input, 1, 1000, expected, sizeLayer);
-        for(int i = 0; i < 1; i++){
+        double * test = train(input, 3, 1000, expected, sizeLayer);
+        for(int i = 0; i < sizeLayer[2]; i++){
             cout <<test[i]<<endl;
         }
 
