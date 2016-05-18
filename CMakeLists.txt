@@ -11,5 +11,5 @@ if(NOT EIGEN3_INCLUDE_DIR)
 endif()
 
 
-add_executable(machine_learning ${SOURCE_FILES})
-#add_library(machine_learning SHARED ${SOURCE_FILES})
+#add_executable(machine_learning ${SOURCE_FILES})
+add_library(machine_learning SHARED ${SOURCE_FILES})

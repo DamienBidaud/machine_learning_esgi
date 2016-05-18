@@ -154,9 +154,7 @@ extern "C"{
         cout << "---------------------------regression------------------------" << endl;
 
 
-
         test = trainRegression(input, 2, 8, 10, expected, 4);
-        cout << "regression" << endl;
         for(int i = 0; i < 8; i++){
             cout <<test[i]<<endl;
         }

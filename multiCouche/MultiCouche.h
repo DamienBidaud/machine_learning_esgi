@@ -28,7 +28,6 @@ private:
     double* layers;
     double* expeted;
     void initNetwork(double*);
-
 };
 
 

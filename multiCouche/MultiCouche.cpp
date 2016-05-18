@@ -46,9 +46,11 @@ void NeuralNetwork::initWeight() {
 
 NeuralNetwork::~NeuralNetwork() {
 
+
     for(int i = 0; i < this->nbLayers; i++){
         delete[] this->network[i];
     }
+
 
     for(int j = 0; j < this->sizeInput; j++){
         delete [] this->weight[0][j];
@@ -62,13 +64,14 @@ NeuralNetwork::~NeuralNetwork() {
         delete[] this->weight[i];
     }
 
-    delete this->network;
-
-    delete this->weight;
-
+//    delete this->network;
+//
+//    delete this->weight;
+//
 //    delete this->layers;
-
+//
 //    delete this->expeted;
+
 
 }
 
@@ -147,6 +150,7 @@ double NeuralNetwork::randNN(double max, double min) {
 
 
 double *NeuralNetwork::getOutput() {
+
     double* out = this->network[this->nbLayers-1];
     return out;
 }
