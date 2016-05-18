@@ -100,10 +100,6 @@ extern "C"{
 
     __declspec(dllexport) void regresion(double* valueSend, int size, int inputSize, double* waitValue, double* model){
         double** value = cleanArray(valueSend, size, inputSize);
-
-
-        //Matrix3f matrix3f;
-        //deleteArray(value, size/inputSize);
     }
 
     __declspec(dllexport)double* train(double* input, int size, int nbNeurone, int training, double* expected, int inputSize ){
@@ -115,7 +111,19 @@ extern "C"{
             neuralNetwork.updateWeight();
             i++;
         }
+        double* out = neuralNetwork.getOutput();
+        return out;
+    }
 
+    __declspec(dllexport)double* trainRegression(double* input, int size, int nbNeurone, int training, double* expected, int inputSize ){
+        NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize);
+        int i = 0;
+        while(i < training) {
+            neuralNetwork.getLastRegression();
+            neuralNetwork.getValues();
+            neuralNetwork.updateWeight();
+            i++;
+        }
         double* out = neuralNetwork.getOutput();
         return out;
     }
@@ -137,13 +145,24 @@ extern "C"{
         expected[1]=-1;
         expected[2]=-1;
         expected[3]=1;
-        double * test = train(input, 5, 8, 200, expected, 4);
+        cout << "---------------------------classification------------------------" << endl;
+        double * test = train(input, 2, 8, 10, expected, 4);
+        for(int i = 0; i < 8; i++){
+            cout <<test[i]<<endl;
+        }
 
-        for(int i = 0; i < 5; i++){
+        cout << "---------------------------regression------------------------" << endl;
+
+
+
+        test = trainRegression(input, 2, 8, 10, expected, 4);
+        cout << "regression" << endl;
+        for(int i = 0; i < 8; i++){
             cout <<test[i]<<endl;
         }
 
         cout << "end" << endl;
+        getchar();
     }
 
 }

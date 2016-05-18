@@ -16,21 +16,18 @@ public:
     double getSumWeight(int,int);
     void updateWeight();
     void initWeight();
-    double randValue(double, double);
+    double randNN(double, double);
     void getLastRegression();
     double *getOutput();
 private:
     int nbLayers;
     int nbNeurons;
     int sizeInput;
-    double* input;
     double** network;
-    double lastLayer;
+    double*** weight;
     double* layers;
     double* expeted;
-    double*** weight;
     void initNetwork(double*);
-    double getSigne(int , int, int);
 
 };
 
