@@ -33,22 +33,12 @@ void NeuralNetwork::initNetwork(double* input) {
 
 void NeuralNetwork::initWeight() {
     this->weight = new double**[this->nbLayers+1];
-    for(int i = 0; i < this->nbLayers+1; i++){
-        if(i==0){
-            this->weight[i] = new double *[this->nbNeurons];
-            for (int j = 0; j < this->sizeInput; j++) {
-                this->weight[i][j] = new double[this->nbNeurons];
-                for (int q = 0; q < this->nbNeurons; q++) {
-                    this->weight[i][j][q] = randValue(1, -1);
-                }
-            }
-        }else {
-            this->weight[i] = new double *[this->nbNeurons];
-            for (int j = 0; j < this->nbNeurons; j++) {
-                this->weight[i][j] = new double[this->nbNeurons];
-                for (int q = 0; q < this->nbNeurons; q++) {
-                    this->weight[i][j][q] = randValue(1, -1);
-                }
+    for(int i = 1; i < this->nbLayers; i++){
+        this->weight[i] = new double *[this->nbNeurons];
+        for (int j = 1; j < this->nbNeurons; j++) {
+            this->weight[i][j] = new double[this->nbNeurons];
+            for (int q = 1; q < this->nbNeurons; q++) {
+                this->weight[i][j][q] = randValue(1, -1);
             }
         }
     }
@@ -56,7 +46,7 @@ void NeuralNetwork::initWeight() {
 
 
 NeuralNetwork::~NeuralNetwork() {
-    for(int i = 0; i < this->nbLayers+1; i++){
+    for(int i = 0; i < this->nbLayers-1; i++){
         delete[] this->network[i];
     }
 
@@ -65,27 +55,29 @@ NeuralNetwork::~NeuralNetwork() {
     }
     delete[] this->weight[0];
 
-    for(int i = 1; i < this->nbLayers+1; i++){
+    for(int i = 1; i < this->nbLayers-1; i++){
         for(int j = 0; j < this->nbNeurons; j++){
             delete [] this->weight[i][j];
         }
         delete[] this->weight[i];
     }
 
+    delete this->input;
     delete this->network;
     delete this->weight;
     delete this->layers;
+    delete this->expeted;
 }
 
 
 void NeuralNetwork::getLastValue() {
     for(int i = 0; i < this->nbNeurons; i++){
-        this->network[this->nbLayers][i] = ((this->getOut(this->nbLayers, i)*this->getOut(this->nbLayers, i)))*(this->getOut(this->nbLayers,i)-expeted[i]);
+        this->network[this->nbLayers-1][i] = ((this->getOut(this->nbLayers-1, i)*this->getOut(this->nbLayers-1, i)))*(this->getOut(this->nbLayers-1,i)-expeted[i]);
     }
 }
 
 double NeuralNetwork::getOut(int layer, int neurone) {
-    double weight = 0;
+    double weight = 0.1;
     /*for (int i = 0; i < this->sizeInput; i++) {
         if(layer-1>=0) {
             weight += (this->weight[layer - 1][i][neurone]) *
@@ -106,7 +98,7 @@ void NeuralNetwork::getValues() {
     int position = this->nbLayers-1;
     for(int i = this->nbLayers-2; i > 0; i--){
         for(int j = 0; j < this->nbNeurons; j++){
-            this->network[i][j] = (1- (this->getOut(i, j)*this->getOut(i, j)))*getSumWeight(position, j);
+            this->network[i][j] = (1- (this->getOut(i-1, j)*this->getOut(i-1, j)))*getSumWeight(position, j);
         }
         position--;
     }
@@ -114,9 +106,10 @@ void NeuralNetwork::getValues() {
 }
 
 double NeuralNetwork::getSumWeight(int layer, int position){
-    double sum = 0;
+    double sum = 1;
 
     if(layer >0) {
+        sum = 0;
         for (int j = 1; j < this->nbNeurons; j++) {
             sum += (this->weight[layer - 1][position][j]) * this->network[layer][j];
         }
@@ -127,7 +120,7 @@ double NeuralNetwork::getSumWeight(int layer, int position){
 void NeuralNetwork::updateWeight() {
     for(int j = 0; j < this->sizeInput; j++){
         for(int q = 0; q < this->nbNeurons; q++){
-            this->weight[0][j][q] = this->weight[0][j][q] - this->getSigne(0, j, q);
+            this->weight[0][j][q] = this->weight[0][j][q] - (0.1*(getOut(0, j)*network[0][j]));
         }
     }
 
@@ -135,7 +128,7 @@ void NeuralNetwork::updateWeight() {
 
         for(int j = 0; j < this->nbNeurons; j++){
             for(int q = 0; q < this->nbNeurons; q++){
-                this->weight[i][j][q] = this->weight[i][j][q] - this->getSigne(i, j, q);
+                this->weight[i][j][q] = this->weight[i][j][q] -  (0.1*(getOut(i-1, j)*network[i][q]));
             }
         }
     }
@@ -159,7 +152,6 @@ void NeuralNetwork::getLastRegression() {
 
 double *NeuralNetwork::getOutput() {
     double* out = this->network[this->nbLayers-1];
-    cout << "ok"<<endl;
     return out;
 }
 

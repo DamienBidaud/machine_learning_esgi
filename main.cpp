@@ -110,18 +110,19 @@ extern "C"{
         NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize);
         int i = 0;
         while(i < training) {
-            neuralNetwork.getLastRegression();
+            neuralNetwork.getLastValue();
             neuralNetwork.getValues();
             neuralNetwork.updateWeight();
             i++;
         }
 
-
-        return neuralNetwork.getOutput();
+        double* out = neuralNetwork.getOutput();
+        return out;
     }
 
 
     int main(void){
+        cout << "start" << endl;
         double* input = new double[8];
         input[0]= 1.139626;
         input[1]= 4.53;
@@ -136,9 +137,13 @@ extern "C"{
         expected[1]=-1;
         expected[2]=-1;
         expected[3]=1;
-        double * test = train(input, 5, 5, 200, expected, 4);
+        double * test = train(input, 5, 8, 200, expected, 4);
 
-        cout << "endsokd" << endl;
+        for(int i = 0; i < 5; i++){
+            cout <<test[i]<<endl;
+        }
+
+        cout << "end" << endl;
     }
 
 }
