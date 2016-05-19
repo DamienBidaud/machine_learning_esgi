@@ -115,16 +115,17 @@ extern "C"{
 
     }
 
-    __declspec(dllexport)double* trainRegression(double* input, int size, int nbNeurone, int training, double* expected, int inputSize,int* sizeLayer ){
-        //NeuralNetwork neuralNetwork(size, nbNeurone, expected, input, inputSize, sizeLayer);
+    __declspec(dllexport)double* trainRegression(double* input, int size, int training, double* expected, int* sizeLayers ){
+        NeuralNetwork neuralNetwork(size, expected, input, sizeLayers);
         int i = 0;
         while(i < training) {
-            //neuralNetwork.getLastRegression();
-        //    neuralNetwork.updateWeight();
+            neuralNetwork.updateWeightRegression();
+            neuralNetwork.updateOutput();
             i++;
+
         }
-        //double* out = neuralNetwork.getOutput();
-        return 0;
+        cout << "ok"<<endl;
+        return neuralNetwork.getOutput();
     }
 
 
@@ -147,15 +148,15 @@ extern "C"{
         sizeLayer[1] = 1;
         sizeLayer[2] = 1;
         cout << "---------------------------classification------------------------" << endl;
-        double * test = train(input, 3, 1000, expected, sizeLayer);
+       /* double * test = train(input, 3, 1000, expected, sizeLayer);
         for(int i = 0; i < sizeLayer[2]; i++){
             cout <<test[i]<<endl;
-        }
+        }*/
 
-       /* cout << "---------------------------regression------------------------" << endl;
+        cout << "---------------------------regression------------------------" << endl;
 
 
-        test = trainRegression(input, 2, 8, 10, expected, 4);
+        /*test = trainRegression(input, 3, 1000, expected, sizeLayer);
         for(int i = 0; i < 8; i++){
             cout <<test[i]<<endl;
         }*/

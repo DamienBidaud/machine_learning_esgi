@@ -106,6 +106,18 @@ void NeuralNetwork::updateWeight() {
     }
 }
 
+void NeuralNetwork::updateWeightRegression() {
+    cout << "weight"<<endl;
+    for(int i = 1; i < this->nbLayers-1; i++){
+        for(int j = 0; j < this->sizeLayers[i-1]; j++){
+            for(int q = 0; q < this->sizeLayers[i]; q++){
+                this->weight[i][j][q] = this->weight[i][j][q] -  (0.1*(network[i-1][j]*getDeltaRegression(i,q)));
+            }
+
+        }
+    }
+}
+
 
 
 double NeuralNetwork::randNN(double max, double min) {
@@ -128,13 +140,29 @@ double NeuralNetwork::getDelta(int layer, int neurone) {
     }
 }
 
+double NeuralNetwork::getDeltaRegression(int layer, int neurone) {
+    if(layer == this->nbLayers-2){
+        return network[layer][neurone]-expeted[neurone];
+    }else{
+        return (1- (this->network[layer-1][neurone]*this->network[layer-1][neurone]))*getSumWeight(layer, neurone);
+    }
+}
+
 void NeuralNetwork::updateOutput() {
+    cout << "output"<<endl;
     for(int i = 1; i < this->nbLayers; i++){
         for(int j = 0; j < this->sizeLayers[i]; j++){
             this->network[i][j] = getOut(i,j);
         }
     }
 }
+
+
+
+
+
+
+
 
 
 

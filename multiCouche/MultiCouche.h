@@ -13,10 +13,12 @@ public:
     ~NeuralNetwork();
     double getSumWeight(int,int);
     void updateWeight();
+    void updateWeightRegression();
     void initWeight();
     double randNN(double, double);
     double *getOutput();
     double getDelta(int, int);
+    double getDeltaRegression(int, int);
     void updateOutput();
 private:
     int nbLayers;
