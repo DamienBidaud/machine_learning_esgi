@@ -111,6 +111,7 @@ extern "C"{
             neuralNetwork.updateOutput();
             i++;
         }
+        cout << "ok"<<endl;
         return neuralNetwork.getOutput();
 
     }
@@ -145,13 +146,14 @@ extern "C"{
 
         int* sizeLayer = new int[3];
         sizeLayer[0] = 6;
+        //sizeLayer[1] = 2;
         sizeLayer[1] = 1;
         sizeLayer[2] = 1;
         cout << "---------------------------classification------------------------" << endl;
-       /* double * test = train(input, 3, 1000, expected, sizeLayer);
+        double * test = train(input, 3, 1000, expected, sizeLayer);
         for(int i = 0; i < sizeLayer[2]; i++){
             cout <<test[i]<<endl;
-        }*/
+        }
 
         cout << "---------------------------regression------------------------" << endl;
 

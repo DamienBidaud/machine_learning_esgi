@@ -47,7 +47,7 @@ void NeuralNetwork::initWeight() {
 
 NeuralNetwork::~NeuralNetwork() {
 
-
+    cout << "network"<<endl;
     for(int i = 0; i < this->nbLayers; i++){
         delete[] this->network[i];
     }
@@ -55,6 +55,7 @@ NeuralNetwork::~NeuralNetwork() {
 
     delete network;
 
+    cout << "weight"<<endl;
     for(int i = 1; i < this->nbLayers; i++){
 
         for(int j = 0; j < this->sizeLayers[i-1]; j++){
@@ -63,16 +64,12 @@ NeuralNetwork::~NeuralNetwork() {
         }
         delete[] this->weight[i];
     }
-    delete weight;
+    cout << "ok"<<endl;
+    //delete weight;
+    cout << "variable"<<endl;
     delete expeted;
     delete sizeLayers;
 }
-
-/*void NeuralNetwork::getLastRegression() {
-    for(int i = 0; i < this->nbNeurons; i++){
-        this->network[this->nbLayers-1][i] = (getOut(this->nbLayers-1, i))-expeted[i];
-    }
-}*/
 
 double NeuralNetwork::getOut(int layer, int neurone) {
     double x = 0;
@@ -107,7 +104,6 @@ void NeuralNetwork::updateWeight() {
 }
 
 void NeuralNetwork::updateWeightRegression() {
-    cout << "weight"<<endl;
     for(int i = 1; i < this->nbLayers-1; i++){
         for(int j = 0; j < this->sizeLayers[i-1]; j++){
             for(int q = 0; q < this->sizeLayers[i]; q++){
@@ -149,7 +145,6 @@ double NeuralNetwork::getDeltaRegression(int layer, int neurone) {
 }
 
 void NeuralNetwork::updateOutput() {
-    cout << "output"<<endl;
     for(int i = 1; i < this->nbLayers; i++){
         for(int j = 0; j < this->sizeLayers[i]; j++){
             this->network[i][j] = getOut(i,j);
