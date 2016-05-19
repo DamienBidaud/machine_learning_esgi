@@ -16,7 +16,7 @@ extern "C"{
     }
 
     int randPos(int max, int min){
-        return (max - min) * (rand() / RAND_MAX) + min;
+        return rand()%(max-min + 1) + min;;
     }
     /**
      * créer le model
@@ -78,13 +78,6 @@ extern "C"{
         double** value = cleanArray(exemplValue, size, inputSize);
         int i = 0;
         while(iter < maxIter) {
-            /*for (int i = 0; i < size/inputSize; i++) {
-                if (waitValue[i] != perceptron(value[i], model, inputSize)) {
-                    for(int j = 0; j < inputSize; j++){
-                        model[j] = model[j] + (coef * (waitValue[i] *value[i][j]));
-                    }
-                }
-            }*/
             i = randPos(size/inputSize, 0);
             if (waitValue[i] != perceptron(value[i], model, inputSize)) {
                 for(int j = 0; j < inputSize; j++){
@@ -102,17 +95,36 @@ extern "C"{
         double** value = cleanArray(valueSend, size, inputSize);
     }
 
-    __declspec(dllexport)double* train(double* input, int size, int training, double* expected, int* sizeLayers ){
-        NeuralNetwork neuralNetwork(size, expected, input, sizeLayers);
+    double* selectTrain(double* input, int pos, int size){
+        double *val = new double[size];
         int i = 0;
-        while(i < training) {
-
-            neuralNetwork.updateWeight();
-            neuralNetwork.updateOutput();
+        int q = 0;
+        while(i < pos){
+            for(int j = 0; j <= size; j++){
+                val[j] = input[q];
+                q++;
+            }
             i++;
         }
-        cout << "ok"<<endl;
-        return neuralNetwork.getOutput();
+        return val;
+    };
+
+    __declspec(dllexport)NeuralNetwork train(double* input, int size, int training, double* expected, int* sizeLayers, int nbExemple ){
+        NeuralNetwork neuralNetwork(size, expected, input, sizeLayers);
+        int i = 0;
+        int rand = 0;
+        while(i < training) {
+            rand = randPos(nbExemple, 0);
+            neuralNetwork.setInput(selectTrain(input, rand, sizeLayers[0]));
+            neuralNetwork.updateOutput();
+            if(neuralNetwork.getOutput()[sizeLayers[size-1]-1]!=expected[rand]) {
+                neuralNetwork.updateWeight(rand);
+            }
+
+            i++;
+        }
+
+        return neuralNetwork;
 
     }
 
@@ -145,15 +157,20 @@ extern "C"{
         expected[2]=-1;
 
         int* sizeLayer = new int[3];
-        sizeLayer[0] = 6;
+        sizeLayer[0] = 2;
         //sizeLayer[1] = 2;
         sizeLayer[1] = 1;
         sizeLayer[2] = 1;
         cout << "---------------------------classification------------------------" << endl;
-        double * test = train(input, 3, 1000, expected, sizeLayer);
-        for(int i = 0; i < sizeLayer[2]; i++){
-            cout <<test[i]<<endl;
-        }
+        NeuralNetwork test = train(input, 3, 1000, expected, sizeLayer, 2);
+        double* value  = new double[2];
+        value[0]= 0;
+        value[1] = 1;
+
+        test.setInput(value);
+        test.updateOutput();
+        double* output = test.getOutput();
+        cout << output[0] << endl;
 
         cout << "---------------------------regression------------------------" << endl;
 

@@ -47,7 +47,6 @@ void NeuralNetwork::initWeight() {
 
 NeuralNetwork::~NeuralNetwork() {
 
-    cout << "network"<<endl;
     for(int i = 0; i < this->nbLayers; i++){
         delete[] this->network[i];
     }
@@ -55,7 +54,6 @@ NeuralNetwork::~NeuralNetwork() {
 
     delete network;
 
-    cout << "weight"<<endl;
     for(int i = 1; i < this->nbLayers; i++){
 
         for(int j = 0; j < this->sizeLayers[i-1]; j++){
@@ -64,9 +62,7 @@ NeuralNetwork::~NeuralNetwork() {
         }
         delete[] this->weight[i];
     }
-    cout << "ok"<<endl;
     //delete weight;
-    cout << "variable"<<endl;
     delete expeted;
     delete sizeLayers;
 }
@@ -80,24 +76,24 @@ double NeuralNetwork::getOut(int layer, int neurone) {
     return tanh(x);
 }
 
-double NeuralNetwork::getSumWeight(int layer, int position){
+double NeuralNetwork::getSumWeight(int layer, int position, int pos){
     double sum = 1;
     if(layer >0) {
         sum = 0;
         for (int j = 1; j <  this->sizeLayers[layer]; j++) {
             if(layer-1>0) {
-                sum += (this->weight[layer - 1][position][j]) * getDelta(layer,j);
+                sum += (this->weight[layer - 1][position][j]) * getDelta(layer,j, pos);
             }
         }
     }
     return sum;
 }
 
-void NeuralNetwork::updateWeight() {
+void NeuralNetwork::updateWeight(int pos) {
     for(int i = 1; i < this->nbLayers-1; i++){
         for(int j = 0; j < this->sizeLayers[i-1]; j++){
             for(int q = 0; q < this->sizeLayers[i]; q++){
-                this->weight[i][j][q] = this->weight[i][j][q] -  (0.1*(network[i-1][j]*getDelta(i,q)));
+                this->weight[i][j][q] = this->weight[i][j][q] -  (0.1*(network[i-1][j]*getDelta(i,q, pos)));
             }
         }
     }
@@ -127,12 +123,12 @@ double *NeuralNetwork::getOutput() {
     return this->network[this->nbLayers-1];
 }
 
-double NeuralNetwork::getDelta(int layer, int neurone) {
+double NeuralNetwork::getDelta(int layer, int neurone, int pos) {
     if(layer == this->nbLayers-2){
-        return (1-(this->network[layer][neurone]*this->network[layer][neurone]))*(this->network[layer][neurone]-expeted[neurone]);
+        return (1-(this->network[layer][neurone]*this->network[layer][neurone]))*(this->network[layer][neurone]-expeted[pos]);
     }else{
 
-        return (1- (this->network[layer-1][neurone]*this->network[layer-1][neurone]))*getSumWeight(layer, neurone);
+        return (1- (this->network[layer-1][neurone]*this->network[layer-1][neurone]))*getSumWeight(layer, neurone, pos);
     }
 }
 
@@ -140,7 +136,7 @@ double NeuralNetwork::getDeltaRegression(int layer, int neurone) {
     if(layer == this->nbLayers-2){
         return network[layer][neurone]-expeted[neurone];
     }else{
-        return (1- (this->network[layer-1][neurone]*this->network[layer-1][neurone]))*getSumWeight(layer, neurone);
+        return (1- (this->network[layer-1][neurone]*this->network[layer-1][neurone]))*getSumWeight(layer, neurone, 0);
     }
 }
 
@@ -151,6 +147,12 @@ void NeuralNetwork::updateOutput() {
         }
     }
 }
+
+void NeuralNetwork::setInput(double * input) {
+    this->network[0] = input;
+}
+
+
 
 
 
