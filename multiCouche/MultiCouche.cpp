@@ -22,7 +22,8 @@ void NeuralNetwork::initNetwork(double* input) {
     this->network[0] = input;
     for(int i = 1; i < this->nbLayers; i++){
         this->network[i] = new double[this->sizeLayers[i]];
-        for (int q = 0; q < this->sizeLayers[i]; q++) {
+        this->network[i][1] = 1;
+        for (int q = 1; q < this->sizeLayers[i]; q++) {
             this->network[i][q] = this->getOut(i, q);
         }
     }
@@ -124,7 +125,7 @@ double *NeuralNetwork::getOutput() {
 }
 
 double NeuralNetwork::getDelta(int layer, int neurone, int pos) {
-    if(layer == this->nbLayers-2){
+    if(layer == this->nbLayers-1){
         return (1-(this->network[layer][neurone]*this->network[layer][neurone]))*(this->network[layer][neurone]-expeted[pos]);
     }else{
 
@@ -142,7 +143,7 @@ double NeuralNetwork::getDeltaRegression(int layer, int neurone) {
 
 void NeuralNetwork::updateOutput() {
     for(int i = 1; i < this->nbLayers; i++){
-        for(int j = 0; j < this->sizeLayers[i]; j++){
+        for(int j = 1; j < this->sizeLayers[i]; j++){
             this->network[i][j] = getOut(i,j);
         }
     }

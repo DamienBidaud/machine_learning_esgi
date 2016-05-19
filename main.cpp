@@ -110,20 +110,19 @@ extern "C"{
     };
 
     __declspec(dllexport)NeuralNetwork train(double* input, int size, int training, double* expected, int* sizeLayers, int nbExemple ){
-        NeuralNetwork neuralNetwork(size, expected, input, sizeLayers);
-        int i = 0;
         int rand = 0;
+        rand = randPos(nbExemple, 0);
+        NeuralNetwork neuralNetwork(size, expected, selectTrain(input, rand, sizeLayers[0]), sizeLayers);
+        int i = 0;
         while(i < training) {
-            rand = randPos(nbExemple, 0);
-            neuralNetwork.setInput(selectTrain(input, rand, sizeLayers[0]));
-            neuralNetwork.updateOutput();
             if(neuralNetwork.getOutput()[sizeLayers[size-1]-1]!=expected[rand]) {
                 neuralNetwork.updateWeight(rand);
             }
-
+            rand = randPos(nbExemple, 0);
+            neuralNetwork.setInput(selectTrain(input, rand, sizeLayers[0]));
+            neuralNetwork.updateOutput();
             i++;
         }
-
         return neuralNetwork;
 
     }
@@ -156,23 +155,23 @@ extern "C"{
         expected[1]=1;
         expected[2]=-1;
 
-        int* sizeLayer = new int[3];
+        int* sizeLayer = new int[4];
         sizeLayer[0] = 2;
         //sizeLayer[1] = 2;
-        sizeLayer[1] = 1;
-        sizeLayer[2] = 1;
+        sizeLayer[1] = 2;
+        sizeLayer[2] = 2;
         cout << "---------------------------classification------------------------" << endl;
-        NeuralNetwork test = train(input, 3, 1000, expected, sizeLayer, 2);
+        NeuralNetwork test = train(input, 3, 200000, expected, sizeLayer, 2);
         double* value  = new double[2];
-        value[0]= 0;
+        value[0]= 1;
         value[1] = 1;
 
         test.setInput(value);
         test.updateOutput();
         double* output = test.getOutput();
-        cout << output[0] << endl;
+        cout << output[1] << endl;
 
-        cout << "---------------------------regression------------------------" << endl;
+//        cout << "---------------------------regression------------------------" << endl;
 
 
         /*test = trainRegression(input, 3, 1000, expected, sizeLayer);
