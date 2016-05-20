@@ -32,7 +32,7 @@ public class Linear : MonoBehaviour
     [SerializeField]
     Material red,blue;
 
-    ModelClass createTrainingConfiguration()
+    ModelClass configTraining()
     {
         ModelClass training = new ModelClass();
         training.NbElement = panelValues.Length;
@@ -42,15 +42,15 @@ public class Linear : MonoBehaviour
 
         for (int i = 0; i < targetRenderer.Length; ++i)
         {
-            MeshRenderer mr = targetRenderer[i].GetComponent<MeshRenderer>();
-            if (mr.material.color == red.color)
+            MeshRenderer renderer = targetRenderer[i].GetComponent<MeshRenderer>();
+            if (renderer.material.color == red.color)
             {
                 Transform t = panelValues[i].GetComponent<Transform>();
                 training.TrainingExemples[i * training.inputSize] = t.position.x;
                 training.TrainingExemples[i * training.inputSize + 1] = t.position.z;
                 training.WaitedValues[i] = 1;
             }
-            if (mr.material.color == blue.color)
+            if (renderer.material.color == blue.color)
             {
                 Transform t = panelValues[i].GetComponent<Transform>();
                 training.TrainingExemples[i * training.inputSize] = t.position.x;
@@ -71,20 +71,18 @@ public class Linear : MonoBehaviour
             MeshRenderer renderer = trainingPanel[i].GetComponent<MeshRenderer>();
             input[0] = transform.position.x;
             input[1] = transform.position.z;
-            double val = classifyRegression(model, input, 2);
+            double colorRatio = classifyRegression(model, input, 2);
+            colorRatio = (colorRatio + 1) / 2;
 
-            val = (val + 1) / 2;
-
-            renderer.material.color = new Color((float)val, 0f, (float)(1.0 - val));
-
+            renderer.material.color = new Color((float)colorRatio, 0f, (float)(1.0 - colorRatio));
         }
     }
 
     // Use this for initialization
     void Start()
     {
-        System.IntPtr model = lineaire_model(createTrainingConfiguration().inputSize + 1);
-        var training = createTrainingConfiguration();        
+        System.IntPtr model = lineaire_model(configTraining().inputSize + 1);
+        var training = configTraining();        
         regression(model, training.TrainingExemples, training.NbElement, training.inputSize, training.WaitedValues);
         updateView(model);
         cleanModel(model);
